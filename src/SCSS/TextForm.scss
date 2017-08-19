@@ -5,6 +5,13 @@
 	margin-bottom: 10px;
 	border: 1px solid #E3E3E3;
 	border-radius: 5px;
+	display: flex;
+	flex-direction: column-reverse;
+
+	p {
+		text-align: right;
+	}
+
 }
 
 Button {

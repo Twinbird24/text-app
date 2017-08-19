@@ -22,8 +22,8 @@ class TextForm extends Component {
 	sendText() {
 	    let messageArea = document.getElementsByClassName('messageArea')[0];
 	    let text = document.createElement('p');
-	    text.innerHTML = this.state.inputValue;
-	    messageArea.appendChild(text);
+		text.innerHTML = this.state.inputValue;
+		messageArea.lastElementChild.appendChild(text);
 	    this.setState({
 	    	inputValue: ''
 	    });
@@ -41,7 +41,7 @@ class TextForm extends Component {
 	      	<Col xs={6} xsOffset={3}>
 	      		<Well>
 	      			<div className="messageArea">
-
+					  <p></p>
 	      			</div>
 	      			<FormGroup>
 	      				<FormControl
