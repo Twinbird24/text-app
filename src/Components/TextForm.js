@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Grid, Col, Well, FormGroup, FormControl, Button } from 'react-bootstrap';
 import '../SCSS/TextForm.css';
+import * as axios from 'axios';
 
 class TextForm extends Component {
 
@@ -24,6 +25,16 @@ class TextForm extends Component {
 	    let text = document.createElement('p');
 		text.innerHTML = this.state.inputValue;
 		messageArea.lastElementChild.appendChild(text);
+		console.log('test');
+		axios.post('http://localhost:3020/test', {
+			text
+		})
+		.then( (res) => {
+			console.log('request sent from the front end', res)
+		})
+		.catch( (err) => {
+			console.log(err)
+		});
 	    this.setState({
 	    	inputValue: ''
 	    });
