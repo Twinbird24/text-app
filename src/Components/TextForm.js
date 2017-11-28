@@ -25,15 +25,15 @@ class TextForm extends Component {
 	    let text = document.createElement('p');
 		text.innerHTML = this.state.inputValue;
 		messageArea.lastElementChild.appendChild(text);
-		console.log('test');
-		axios.post('http://localhost:3020/test', {
-			text
+		const textMessage = text.innerHTML;
+		axios.post('http://localhost:3010/test', {
+			text: textMessage 
 		})
 		.then( (res) => {
 			console.log('request sent from the front end', res)
 		})
 		.catch( (err) => {
-			console.log(err)
+			console.log('text app front-end error', err.response)
 		});
 	    this.setState({
 	    	inputValue: ''
