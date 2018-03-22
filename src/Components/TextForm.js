@@ -1,43 +1,49 @@
 import React, { Component } from 'react';
 import { Grid, Col, Well, FormGroup, FormControl, Button } from 'react-bootstrap';
 import '../SCSS/TextForm.css';
-import * as axios from 'axios';
+//import * as axios from 'axios';
+import io from 'socket.io-client';
 
 class TextForm extends Component {
 
-	constructor(props) {
-	    super(props);
-	    this.state = {
-	    	inputValue: ''
-	    };
-	    this.sendText = this.sendText.bind(this);
-	    this.handleKeyPress = this.handleKeyPress.bind(this);
+	constructor() {
+		super();
+		this.state = {
+			inputValue: ''
+		};
+		this.sendText = this.sendText.bind(this);
+		this.handleKeyPress = this.handleKeyPress.bind(this);
+	}
+
+	componentDidMount() {
+		this.initializeWebsocket();
+	}
+
+	initializeWebsocket() {
+		const socket = io('http://localhost:3010');
+		this.setState({ socket });
+		socket.on('connect', () => {
+			// enable chat ability once connected
+		});
 	}
 
 	handleKeyPress(target) {
-		if(target.charCode === 13) {
+		if (target.charCode === 13) {
 			this.sendText();
 		}
 	}
 
 	sendText() {
-	    let messageArea = document.getElementsByClassName('messageArea')[0];
-	    let text = document.createElement('p');
+		let messageArea = document.getElementsByClassName('messageArea')[0];
+		let text = document.createElement('p');
 		text.innerHTML = this.state.inputValue;
 		messageArea.lastElementChild.appendChild(text);
 		const textMessage = text.innerHTML;
-		axios.post('http://localhost:3010/test', {
-			text: textMessage 
-		})
-		.then( (res) => {
-			console.log('request sent from the front end', res)
-		})
-		.catch( (err) => {
-			console.log('text app front-end error', err.response)
+		this.state.socket.emit('text', textMessage);
+
+		this.setState({
+			inputValue: ''
 		});
-	    this.setState({
-	    	inputValue: ''
-	    });
 	}
 
 	updateInputValue(e) {
@@ -46,27 +52,27 @@ class TextForm extends Component {
 		});
 	}
 
-  	render() {
-	    return (
-	      <Grid>
-	      	<Col xs={6} xsOffset={3}>
-	      		<Well>
-	      			<div className="messageArea">
-					  <p></p>
-	      			</div>
-	      			<FormGroup>
-	      				<FormControl
-	      					value={this.state.inputValue}
-	      					onChange={e => this.updateInputValue(e)}
-	      					onKeyPress={this.handleKeyPress}
-	      				/>
-	      				<Button color="primary" onClick={this.sendText}>Send</Button>
-	      			</FormGroup>
-	      		</Well>
-	      	</Col>
-	      </Grid>
-	    );
-  	}
+	render() {
+		return (
+			<Grid>
+				<Col xs={6} xsOffset={3}>
+					<Well>
+						<div className="messageArea">
+							<p></p>
+						</div>
+						<FormGroup>
+							<FormControl
+								value={this.state.inputValue}
+								onChange={e => this.updateInputValue(e)}
+								onKeyPress={this.handleKeyPress}
+							/>
+							<Button color="primary" onClick={this.sendText}>Send</Button>
+						</FormGroup>
+					</Well>
+				</Col>
+			</Grid>
+		);
+	}
 }
 
 export default TextForm;
